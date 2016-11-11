@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Math, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Grids, StdCtrls, ExtCtrls, TeeProcs, TeEngine, Series, Chart;
+  Dialogs, Grids, StdCtrls, ExtCtrls, TeeProcs, TeEngine, TeeFunci,
+  Chart , Series;
 
 type
   TForm1 = class(TForm)
@@ -48,12 +49,12 @@ type
     Button2: TButton;
     Button3: TButton;
     Grid1: TStringGrid;
+    Series1: TLineSeries;
     Graf: TChart;
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure TForm1Click(Sender: TObject);overload;
+
   private
     { Private declarations }
   public
@@ -78,7 +79,7 @@ begin
 close;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.Button2Click(Sender: TObject);//Кнопка выполнить
 const Nmax = 20;
 type
     Tmy = Array[1..Nmax,1..Nmax] of Extended;
@@ -87,11 +88,11 @@ var
 mA, mX:Tmx;
 mY:Tmy;
 xn,Dx,an,ak,Da,b:Extended;
-N:integer;
-procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var mA,mX:Tmx; var mY:Tmy);   //Процедура табулирования
+N,RA:integer;
+procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx; var mY:Tmy);   //Процедура табулирования
   var
   i,j:integer;
-  x,a,lz:Extended;
+  x,a,lz,Y:Extended;
   begin
   a :=an;
   i:= 1;
@@ -101,38 +102,44 @@ procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var mA,mX:Tmx; var mY:Tmy);  
     for j:=1 to N do
       begin
       if x > 1 then
-           mY[i, j] := Sin(a*x)* Cos(b*x)
+      begin
+           Y := Sin(a*x)* Cos(b*x);
+           mY[i, j] := Y;
+           end
       else
           begin
           lz:= a*a + x*x*x*x + b*b;
-          mY[i, j] := x*x*sqrt(lz);
+          Y := x*x*sqrt(lz);
+          mY[i, j] := Y;
       end;
       mX[j]:= x;
       x:= x + Dx;
       end;
     mA[i]:= a;
     a:= a + Da;
+    i:=i+1;
     end;
+    RA:= i;
   end;
-procedure RezOut(var mA,mX:Tmx;var mY:Tmy);
+procedure RezOut(var RA,N:integer;var mA,mX:Tmx;var mY:Tmy);
 var I,J:Integer;
 begin
-for I:= 1 to Nmax do
+for I:= 1 to (RA-1) do
   begin
-  Grid1.Cells[I,0]:= ('A['+IntToStr(I)+'J='+FloatToStr(mA[I]));
+  Grid1.Cells[I,0]:= ('A['+ IntToStr(I)+']='+ FloatToStr(mA[I]));
   Form1.Graf.Series[0].Clear;
-  for J:=1 to Nmax do
+  for J:= 1 to N do
     begin
      if (Grid1.ColCount<J+1) then
      Grid1.ColCount:= Grid1.ColCount + 1;
-     Grid1.Cells[0,j]:= ('x['+IntToStr(J)+'J='+FloatToStr(Mx[J]));
-     Form1.Graf.Series[0].AddXY(Mx[j],My[I,J]);
-     Grid1.Cells[I,J]:= FloatToStr(My[I,J]);
+     Grid1.Cells[0,J]:= ('x['+IntToStr(J)+']='+FloatToStr(mX[J]));
+     Form1.Graf.Series[0].AddXY(Mx[J],mY[I,J]);
+     Grid1.Cells[I,J]:= FloatToStr(mY[I,J]);
     end;
-     If (Grid1.RowCount<1) then
+     If (Grid1.RowCount<I+1) then
         Grid1.RowCount := Grid1.RowCount + 1;
     end;
-
+    end;
 begin
 xn:= StrToFloat(Edit6.Text);
 N := StrToInt(Edit7.Text);
@@ -140,9 +147,9 @@ Dx:= StrToFloat(Edit8.Text);
 an:= StrToFloat(Edit9.Text);
 ak:=StrToFloat(Edit10.Text);
 Da :=StrToFloat(Edit11.Text);
-b:=1;
-Tab(xn,Dx,an,ak,Da,b,N,mA,mX,mY);
-RezOut(mA,mX,mY);
+b:=1.5;
+Tab(xn,Dx,an,ak,Da,b,N,RA,mA,mX,mY);
+RezOut(RA,N,mA,mX,mY);
 end;
-end;
+
 end.
