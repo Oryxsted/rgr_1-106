@@ -13,8 +13,6 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
-    Edit1: TEdit;
-    Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
@@ -51,10 +49,11 @@ type
     Grid1: TStringGrid;
     Series1: TLineSeries;
     Graf: TChart;
+    Label24: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-
+    
   private
     { Private declarations }
   public
@@ -69,12 +68,20 @@ implementation
 {$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
-begin//Очистить
+     var i,j:integer;  //Кнопка Очистить
+     begin
+     Edit2.Clear; Edit3.Clear; Edit4.Clear; Edit5.Clear; Edit6.Clear;  Edit7.Clear;
+     Edit8.Clear;  Edit9.Clear;  Edit10.Clear;  Edit11.Clear;  Edit12.Clear;  Edit13.Clear;
+     Edit2.SetFocus;
+     Form1.Graf.Series[0].Clear;
+     for i:=0 to 20 do
+      for j:=0 to 20 do
+        Grid1.Cells[i,j]:='';
+     end;
 
-end;
 
 procedure TForm1.Button3Click(Sender: TObject);
-//Конец
+//Кнопка Конец
 begin
 close;
 end;
@@ -89,6 +96,7 @@ mA, mX:Tmx;
 mY:Tmy;
 xn,Dx,an,ak,Da,b:Extended;
 N,RA:integer;
+
 procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx; var mY:Tmy);   //Процедура табулирования
   var
   i,j:integer;
@@ -102,7 +110,7 @@ procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx;
     for j:=1 to N do
       begin
       if x > 1 then
-      begin
+           begin
            Y := Sin(a*x)* Cos(b*x);
            mY[i, j] := Y;
            end
@@ -111,7 +119,7 @@ procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx;
           lz:= a*a + x*x*x*x + b*b;
           Y := x*x*sqrt(lz);
           mY[i, j] := Y;
-      end;
+          end;
       mX[j]:= x;
       x:= x + Dx;
       end;
@@ -121,7 +129,7 @@ procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx;
     end;
     RA:= i;
   end;
-procedure RezOut(var RA,N:integer;var mA,mX:Tmx;var mY:Tmy);
+procedure RezOut(var RA,N:integer;var mA,mX:Tmx;var mY:Tmy);     //процедура вывода результата
 var I,J:Integer;
 begin
 for I:= 1 to (RA-1) do
@@ -135,7 +143,7 @@ for I:= 1 to (RA-1) do
      Grid1.Cells[0,J]:= ('x['+IntToStr(J)+']='+FloatToStr(mX[J]));
      Form1.Graf.Series[0].AddXY(Mx[J],mY[I,J]);
      Grid1.Cells[I,J]:= FloatToStr(mY[I,J]);
-    end;
+     end;
      If (Grid1.RowCount<I+1) then
         Grid1.RowCount := Grid1.RowCount + 1;
     end;
