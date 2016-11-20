@@ -39,9 +39,7 @@ type
     Label19: TLabel;
     Label20: TLabel;
     Label21: TLabel;
-    Label22: TLabel;
     Edit12: TEdit;
-    Edit13: TEdit;
     Label23: TLabel;
     Button1: TButton;
     Button2: TButton;
@@ -71,7 +69,7 @@ procedure TForm1.Button1Click(Sender: TObject);
      var i,j:integer;  //Кнопка Очистить
      begin
      Edit2.Clear; Edit3.Clear; Edit4.Clear; Edit5.Clear; Edit6.Clear;  Edit7.Clear;
-     Edit8.Clear;  Edit9.Clear;  Edit10.Clear;  Edit11.Clear;  Edit12.Clear;  Edit13.Clear;
+     Edit8.Clear;  Edit9.Clear;  Edit10.Clear;  Edit11.Clear;  Edit12.Clear;
      Edit2.SetFocus;
      Form1.Graf.Series[0].Clear;
      for i:=0 to 20 do
@@ -96,6 +94,34 @@ mA, mX:Tmx;
 mY:Tmy;
 xn,Dx,an,ak,Da,b:Extended;
 N,RA:integer;
+
+function f(x:real):real;
+  begin
+  f:= sin(4*x)*(exp(2*x) + exp(-2*x));
+  end;
+function integral(km:integer; a,b,eps:real):real;
+var n,i,j:integer; var S, h, integ, integ_old:real;
+begin
+n:=4;
+integ := 0;
+integ_old:=1;
+  for j := 1 to km do
+    begin
+    S := 0;
+    h := (b - a) / n;
+    for i := 1 to n-1 do
+      begin
+      S := S + f(a+h*i);
+      end;
+    integ_old := integ;
+    integ := h * ((f(a)+f(b))/2 + S);
+    if abs(integ_old - integ) > eps then
+      n:= n*2
+    else
+    integral := integ;
+    end;
+end;
+
 
 procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx; var mY:Tmy);   //Процедура табулирования
   var
@@ -149,13 +175,14 @@ for I:= 1 to (RA-1) do
     end;
     end;
 begin
+Edit12.Text:= FloatToStr(integral(StrToInt(Edit4.Text),StrToFloat(Edit2.Text), StrToFloat(Edit5.Text), StrToFloat(Edit3.Text)));
 xn:= StrToFloat(Edit6.Text);
 N := StrToInt(Edit7.Text);
 Dx:= StrToFloat(Edit8.Text);
 an:= StrToFloat(Edit9.Text);
 ak:=StrToFloat(Edit10.Text);
 Da :=StrToFloat(Edit11.Text);
-b:=1.5;
+b:=StrToFloat(Edit12.Text);
 Tab(xn,Dx,an,ak,Da,b,N,RA,mA,mX,mY);
 RezOut(RA,N,mA,mX,mY);
 end;

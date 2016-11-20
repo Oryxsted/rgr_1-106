@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 84
-  Top = 110
+  Left = 180
+  Top = 143
   Width = 906
   Height = 480
   Caption = 'Form1'
@@ -261,24 +261,11 @@ object Form1: TForm1
     ParentFont = False
   end
   object Label21: TLabel
-    Left = 448
+    Left = 560
     Top = 128
     Width = 158
     Height = 20
     Caption = #1047#1085#1072#1095#1077#1085#1080#1077' '#1080#1085#1090#1077#1075#1088#1072#1083#1072
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-  end
-  object Label22: TLabel
-    Left = 704
-    Top = 128
-    Width = 64
-    Height = 20
-    Caption = #1053#1077#1074#1103#1079#1082#1072
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
@@ -311,7 +298,6 @@ object Form1: TForm1
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
-    OnClick = Label24Click
   end
   object Edit2: TEdit
     Left = 176
@@ -319,6 +305,7 @@ object Form1: TForm1
     Width = 49
     Height = 21
     TabOrder = 0
+    Text = '-0,46'
   end
   object Edit3: TEdit
     Left = 384
@@ -342,6 +329,7 @@ object Form1: TForm1
     Width = 49
     Height = 21
     TabOrder = 3
+    Text = '3,95'
   end
   object Edit6: TEdit
     Left = 176
@@ -386,18 +374,11 @@ object Form1: TForm1
     TabOrder = 9
   end
   object Edit12: TEdit
-    Left = 616
+    Left = 736
     Top = 128
     Width = 73
     Height = 21
     TabOrder = 10
-  end
-  object Edit13: TEdit
-    Left = 776
-    Top = 128
-    Width = 49
-    Height = 21
-    TabOrder = 11
   end
   object Button1: TButton
     Left = 32
@@ -405,7 +386,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = #1054#1095#1080#1089#1090#1080#1090#1100
-    TabOrder = 12
+    TabOrder = 11
     OnClick = Button1Click
   end
   object Button2: TButton
@@ -414,7 +395,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = #1042#1099#1087#1086#1083#1085#1080#1090#1100
-    TabOrder = 13
+    TabOrder = 12
     OnClick = Button2Click
   end
   object Button3: TButton
@@ -423,7 +404,7 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = #1047#1072#1082#1088#1099#1090#1100
-    TabOrder = 14
+    TabOrder = 13
     OnClick = Button3Click
   end
   object Grid1: TStringGrid
@@ -432,7 +413,7 @@ object Form1: TForm1
     Width = 320
     Height = 120
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
-    TabOrder = 15
+    TabOrder = 14
     ColWidths = (
       64
       67
@@ -450,7 +431,7 @@ object Form1: TForm1
     Title.Text.Strings = (
       'TChart')
     View3D = False
-    TabOrder = 16
+    TabOrder = 15
     object Series1: TLineSeries
       Marks.ArrowLength = 8
       Marks.Visible = False
