@@ -48,6 +48,11 @@ type
     Series1: TLineSeries;
     Graf: TChart;
     Label24: TLabel;
+    Series2: TLineSeries;
+    Series3: TLineSeries;
+    TeeFunction1: TAddTeeFunction;
+    Series4: TLineSeries;
+    Series5: TLineSeries;
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -87,51 +92,59 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);//Кнопка выполнить
 const Nmax = 20;
 type
-    Tmy = Array[1..Nmax,1..Nmax] of Extended;
-    Tmx = Array[1..Nmax] of Extended;
+    Tmy = Array[1..Nmax,1..Nmax] of Real;
+    Tmx = Array[1..Nmax] of Real;
 var
 mA, mX:Tmx;
 mY:Tmy;
-xn,Dx,an,ak,Da,b:Extended;
-N,RA:integer;
+xn,Dx,an,ak,Da,b,GA,GB,eps:Real;
+N,RA,km,ER:integer;
+
 
 function f(x:real):real;
   begin
   f:= sin(4*x)*(exp(2*x) + exp(-2*x));
   end;
-function integral(km:integer; a,b,eps:real):real;
-var n,i,j:integer; var S, h, integ, integ_old:real;
-begin
-n:=4;
-integ := 0;
-integ_old:=1;
-  for j := 1 to km do
+
+
+procedure integral_trap(GA,GB,eps:real; km:integer; var ER:integer; var integ:real);
+  var n,i,j:integer; var S, h, integ_old:real;
+  begin
+n:=4; ER:=1;
+integ_old:=0; j:=1;
+  while j<=km do
     begin
     S := 0;
-    h := (b - a) / n;
+    h := (GB - GA) / n;
     for i := 1 to n-1 do
       begin
-      S := S + f(a+h*i);
+      S := S + f(GA+h*i);
       end;
-    integ_old := integ;
-    integ := h * ((f(a)+f(b))/2 + S);
+    integ := h * ((f(GA)+f(GB))/2 + S);
     if abs(integ_old - integ) > eps then
-      n:= n*2
+      begin
+      integ_old := integ;
+      n:= n*2;
+      end
     else
-    integral := integ;
+      begin
+      ER:= 0;
+      j:=km;
+      end;
+    j:= j+1;
     end;
-end;
+  end;
 
-
-procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx; var mY:Tmy);   //Процедура табулирования
+procedure Tab(xn,Dx,an,ak,Da,b:Real;N:integer; var RA:integer;var mA,mX:Tmx; var mY:Tmy);   //Процедура табулирования
   var
   i,j:integer;
-  x,a,lz,Y:Extended;
+  x,a,lz,Y:Real;
   begin
   a :=an;
-  i:= 1;
+  i:= 0;
   while a<= ak do
     begin
+    i:=i+1;
     x:=xn;
     for j:=1 to N do
       begin
@@ -151,23 +164,24 @@ procedure Tab(xn,Dx,an,ak,Da,b:Extended;N:integer; var RA:integer;var mA,mX:Tmx;
       end;
     mA[i]:= a;
     a:= a + Da;
-    i:=i+1;
     end;
     RA:= i;
   end;
 procedure RezOut(var RA,N:integer;var mA,mX:Tmx;var mY:Tmy);     //процедура вывода результата
 var I,J:Integer;
 begin
-for I:= 1 to (RA-1) do
+for I:= 1 to RA do
   begin
   Grid1.Cells[I,0]:= ('A['+ IntToStr(I)+']='+ FloatToStr(mA[I]));
-  Form1.Graf.Series[0].Clear;
+   if I<=4 then
+  Form1.Graf.Series[I-1].Clear;
   for J:= 1 to N do
     begin
      if (Grid1.ColCount<J+1) then
      Grid1.ColCount:= Grid1.ColCount + 1;
      Grid1.Cells[0,J]:= ('x['+IntToStr(J)+']='+FloatToStr(mX[J]));
-     Form1.Graf.Series[0].AddXY(Mx[J],mY[I,J]);
+     if I<=4 then
+       Form1.Graf.Series[I-1].AddXY(Mx[J],mY[I,J]);
      Grid1.Cells[I,J]:= FloatToStr(mY[I,J]);
      end;
      If (Grid1.RowCount<I+1) then
@@ -175,14 +189,23 @@ for I:= 1 to (RA-1) do
     end;
     end;
 begin
-Edit12.Text:= FloatToStr(integral(StrToInt(Edit4.Text),StrToFloat(Edit2.Text), StrToFloat(Edit5.Text), StrToFloat(Edit3.Text)));
+GA:= StrToFloat(Edit2.Text);
+GB:= StrToFloat(Edit5.Text);
+eps:= StrToFloat(Edit3.Text);
+km:= StrToInt(Edit4.Text);
+integral_trap(GA,GB,eps,km,ER,b);
+if ER = 1 then
+  begin
+  Edit12.Text:= 'Интеграл не найден';
+  exit;
+  end;
+Edit12.Text:= FloatToStr(b);
 xn:= StrToFloat(Edit6.Text);
 N := StrToInt(Edit7.Text);
 Dx:= StrToFloat(Edit8.Text);
 an:= StrToFloat(Edit9.Text);
 ak:=StrToFloat(Edit10.Text);
 Da :=StrToFloat(Edit11.Text);
-b:=StrToFloat(Edit12.Text);
 Tab(xn,Dx,an,ak,Da,b,N,RA,mA,mX,mY);
 RezOut(RA,N,mA,mX,mY);
 end;
